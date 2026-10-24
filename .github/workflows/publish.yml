@@ -50,7 +50,7 @@ jobs:
         shell: bash
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
-          TG_CHAT: "@pometki"
+          TG_CHAT: "-1004458468264"
           BEFORE: ${{ github.event.before }}
         run: |
           # The first push of a branch has no previous commit:
