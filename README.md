@@ -4,6 +4,8 @@ A weekly curiosity column, published as an RSS feed at
 <https://electricant.github.io/pometki/feed.xml> and as posts on the
 Telegram channel <https://t.me/+pm5yqpHBmiFjYTI8>.
 
+[![Publish](https://github.com/electricant/pometki/actions/workflows/publish.yml/badge.svg?branch=master)](https://github.com/electricant/pometki/actions/workflows/publish.yml)
+
 ## Layout
 
 - `drafts/`: work in progress, never published.
