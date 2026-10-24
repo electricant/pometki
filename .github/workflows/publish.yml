@@ -34,7 +34,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install markdown
       - name: Build site and feed
         run: python3 build.py
       - name: Set up Pages
