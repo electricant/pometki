@@ -1,0 +1,70 @@
+# On every push to main: build the site, deploy it to GitHub Pages and
+# send to Telegram the posts that entered posts/ with this push.
+name: Publish
+
+on:
+  push:
+    branches: ["main"]
+    # A push that only touches drafts publishes nothing
+    paths-ignore: ["drafts/**"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Full history is needed to compare with the previous commit
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Build site and feed
+        run: python3 build.py
+      - name: Set up Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "_site/"
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Send new posts to Telegram
+        shell: bash
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: "@pometki"
+          BEFORE: ${{ github.event.before }}
+        run: |
+          # The first push of a branch has no previous commit:
+          # compare with git's empty tree instead
+          if [[ "$BEFORE" =~ ^0+$ ]]; then
+            BEFORE=$(git hash-object -t tree /dev/null)
+          fi
+          # New posts = files added to posts/ (A) or moved into posts/ from
+          # outside, i.e. from drafts/ (R). A rename inside posts/ does not count.
+          new_posts=$(git diff --name-status -M "$BEFORE" "$GITHUB_SHA" -- posts drafts |
+            awk -F'\t' '($1 == "A" && $2 ~ /^posts\//) ||
+                        ($1 ~ /^R/ && $2 !~ /^posts\// && $3 ~ /^posts\//) { print $NF }')
+          if [ -n "$new_posts" ]; then
+            python3 build.py --post $new_posts
+          else
+            echo "No new posts"
+          fi
