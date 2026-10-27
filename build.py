@@ -46,13 +46,14 @@ MESSAGE_LIMIT = 4096
 class TelegramHTML(HTMLParser):
     """Reduce the HTML produced by Markdown to the tags Telegram accepts.
 
-    Bold, italic, strikethrough, code and links are kept; headings become
-    bold; list items become lines starting with a bullet. The first image
-    is removed from the text and stored in self.image.
+    Bold, italic, strikethrough, code, code blocks, quotes, line breaks and
+    links are kept; headings become bold; list items become lines starting
+    with a bullet. The first image is removed from the text and stored in
+    self.image.
     """
     INLINE_TAGS = {"b", "strong", "i", "em", "s", "del", "code"}
     HEADINGS = {"h1", "h2", "h3", "h4", "h5", "h6"}
-    BLOCKS = {"p", "ul", "ol", "blockquote"}
+    BLOCKS = {"p", "ul", "ol"}
 
     def __init__(self):
         super().__init__(convert_charrefs=True)
@@ -60,10 +61,14 @@ class TelegramHTML(HTMLParser):
         self.image = None
         self._in_ol = False
         self._ol_counter = 0
+        self._in_pre = False
+        self._quote_depth = 0
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
-        if tag in self.INLINE_TAGS:
+        if tag == "code" and attrs.get("class", "").startswith("language-"):
+            self.parts.append(f'<code class="{html.escape(attrs["class"])}">')
+        elif tag in self.INLINE_TAGS:
             self.parts.append(f"<{tag}>")
         elif tag == "a":
             self.parts.append(f'<a href="{html.escape(attrs.get("href", ""))}">')
@@ -78,12 +83,31 @@ class TelegramHTML(HTMLParser):
                 self.parts.append(f"{self._ol_counter}. ")
             else:
                 self.parts.append("• ")
+        elif tag == "br":
+            self.parts.append("\n")
+        elif tag == "blockquote":
+            # Telegram does not allow a quote inside a quote: only the
+            # outermost one is kept
+            self._quote_depth += 1
+            if self._quote_depth == 1:
+                self.parts.append("<blockquote>")
+        elif tag == "pre":
+            self._in_pre = True
+            self.parts.append("<pre>")
         elif tag == "img" and self.image is None:
             self.image = attrs.get("src")
 
     def handle_endtag(self, tag):
         if tag in self.INLINE_TAGS or tag == "a":
             self.parts.append(f"</{tag}>")
+        elif tag == "blockquote":
+            if self._quote_depth == 1:
+                self._drop_trailing_newlines()
+                self.parts.append("</blockquote>\n\n")
+            self._quote_depth -= 1
+        elif tag == "pre":
+            self._in_pre = False
+            self.parts.append("</pre>\n\n")
         elif tag in self.HEADINGS:
             self.parts.append("</b>\n\n")
         elif tag == "ol":
@@ -94,11 +118,24 @@ class TelegramHTML(HTMLParser):
         elif tag == "li":
             self.parts.append("\n")
 
+    def _drop_trailing_newlines(self):
+        while self.parts and not self.parts[-1].strip("\n"):
+            self.parts.pop()
+
     def handle_data(self, data):
+        # Code blocks keep their line breaks, minus the one Markdown adds
+        # at the end
+        if self._in_pre:
+            self.parts.append(html.escape(data.rstrip("\n"), quote=False))
+            return
         # Newlines between blocks are only formatting of the HTML source
         if "\n" in data and not data.strip():
             return
-        self.parts.append(html.escape(data.replace("\n", " "), quote=False))
+        text = data.replace("\n", " ")
+        # Markdown writes a newline after <br />: do not turn it into a space
+        if self.parts[-1:] == ["\n"]:
+            text = text.lstrip()
+        self.parts.append(html.escape(text, quote=False))
 
     def text(self):
         return re.sub(r"\n{3,}", "\n\n", "".join(self.parts)).strip()
@@ -118,7 +155,7 @@ def read_post(path, require_date=True):
         "slug": path.stem,
         "date": datetime.date.fromisoformat(path.stem[:10]) if dated else None,
         "title": first_line[2:].strip(),
-        "html": markdown.markdown(body),
+        "html": markdown.markdown(body, extensions=["fenced_code"]),
     }
 
 

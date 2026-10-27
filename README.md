@@ -22,8 +22,10 @@ Text is written in markdown. Each page must begin with a `# Title` line.
 Images are written as `![description](../images/name.jpg)`. The first image
 becomes the photo of the Telegram message, whose caption is limited to 1024
 characters (4096 for posts without an image). On Telegram, headings become
-bold, lists become bullet lines, and tables, code blocks and further images are
-reduced to plain text or dropped.
+bold, lists become bullet lines, and quotes, code blocks and line breaks (a line
+ending with two spaces) are kept. Tables and further images are reduced to plain
+text or dropped, and so are nested lists, which are not supported yet. A bullet
+list and a numbered list must be separated by a line of text, or they merge.
 
 ## Publishing
 
