@@ -58,6 +58,8 @@ class TelegramHTML(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.parts = []
         self.image = None
+        self._in_ol = False
+        self._ol_counter = 0
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
@@ -67,8 +69,15 @@ class TelegramHTML(HTMLParser):
             self.parts.append(f'<a href="{html.escape(attrs.get("href", ""))}">')
         elif tag in self.HEADINGS:
             self.parts.append("<b>")
+        elif tag == "ol":
+            self._in_ol = True
+            self._ol_counter = 0
         elif tag == "li":
-            self.parts.append("• ")
+            if self._in_ol:
+                self._ol_counter += 1
+                self.parts.append(f"{self._ol_counter}. ")
+            else:
+                self.parts.append("• ")
         elif tag == "img" and self.image is None:
             self.image = attrs.get("src")
 
@@ -77,6 +86,9 @@ class TelegramHTML(HTMLParser):
             self.parts.append(f"</{tag}>")
         elif tag in self.HEADINGS:
             self.parts.append("</b>\n\n")
+        elif tag == "ol":
+            self._in_ol = False
+            self.parts.append("\n\n")
         elif tag in self.BLOCKS:
             self.parts.append("\n\n")
         elif tag == "li":
