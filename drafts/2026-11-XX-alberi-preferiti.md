@@ -1,5 +1,7 @@
 # La classifica dei miei alberi preferiti
 
+![La sequoia gigante di Longarone](../images/Longarone-sequoia_gigante.jpeg)
+
 ## Al terzo posto
 
 [Matusalemme](https://it.wikipedia.org/wiki/Matusalemme_%28albero%29), un Pinus longaeva di 4858 anni, in un luogo segreto. Bravo, eh, una veneranda età, ma che è longevo lo dice anche il nome.
