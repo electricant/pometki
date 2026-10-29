@@ -40,7 +40,6 @@ list and a numbered list must be separated by a line of text, or they merge.
 
 ## Local build
 
-    pip install -r requirements.txt
     python3 build.py
     python3 build.py --check drafts/slug.md
     DRY_RUN=1 python3 build.py --post posts/YYYY-MM-DD-slug.md

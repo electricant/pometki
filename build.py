@@ -195,6 +195,14 @@ def build():
     print(f"Built {len(posts)} posts into {OUTPUT_DIR}/")
 
 
+def telegram_length(text):
+    """Length of the text as Telegram counts it against its limits: tags
+    and link URLs do not count, &amp; and the like count as one character,
+    and characters outside the BMP, such as emoji, count as two (UTF-16)."""
+    visible = html.unescape(re.sub(r"<[^>]*>", "", text))
+    return len(visible.encode("utf-16-le")) // 2
+
+
 def send_to_telegram(path, check=False):
     """Send a post to Telegram. With check=True, only verify it: print the
     text and its length against the limit, and send nothing."""
@@ -203,14 +211,14 @@ def send_to_telegram(path, check=False):
     parser.feed(post["html"])
     text = f"<b>{html.escape(post['title'], quote=False)}</b>\n\n{parser.text()}"
 
-    # The count includes HTML tags, so the check is conservative
+    length = telegram_length(text)
     limit = CAPTION_LIMIT if parser.image else MESSAGE_LIMIT
     if check:
         print(text)
-        print(f"\n{path}: {len(text)} of {limit} characters"
+        print(f"\n{path}: {length} of {limit} characters"
               + (", with photo" if parser.image else ", no photo"))
-    if len(text) > limit:
-        sys.exit(f"{path}: text is {len(text)} characters, limit is {limit}")
+    if length > limit:
+        sys.exit(f"{path}: text is {length} characters, limit is {limit}")
     if check:
         if parser.image:
             photo = post["path"].parent / parser.image
