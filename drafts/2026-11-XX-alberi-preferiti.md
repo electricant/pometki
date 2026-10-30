@@ -12,4 +12,7 @@
 
 ## Al primo posto
 
-La [sequoia gigante di Longarone](https://it.wikipedia.org/wiki/Sequoia_gigante_di_Longarone), sopravvissuta al Vajont: porta ancora la ferita lasciata da acqua e fango. Puoi essere vecchio, enorme e leggendario, ma vuoi mettere sopravvivere a una massa d'acqua con 60-90 TJ di energia? Più o meno la bomba di Hiroshima (circa 63 TJ).
+La [sequoia gigante di Longarone](https://it.wikipedia.org/wiki/Sequoia_gigante_di_Longarone), sopravvissuta al Vajont: porta ancora la ferita lasciata da acqua e fango.
+Al primo posto perchè puoi essere vecchio, enorme e leggendario, ma vuoi 
+mettere sopravvivere a una massa d'acqua con un'energia stimata di 60-90 TJ?
+Più o meno quanto la bomba di Hiroshima (circa 63 TJ).

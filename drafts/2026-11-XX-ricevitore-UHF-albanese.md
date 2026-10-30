@@ -1,6 +1,6 @@
 # Il ricevitore albanese per la TV italiana
 
-![image description](../images/image-name.jpg)
+![Schema e realizzazione di una kanoçe](../images/kanoce.jpg)
 
 L'Albania di Enver Hoxha (1944 - 1985) era il paese più isolato d'Europa:
 autarchia, religione bandita, espatrio vietato. I televisori erano assemblati da
