@@ -8,7 +8,7 @@ kit jugoslavi. Il regime chiuse le porte anche all'etere: ordinò di montare i
 televisori senza il gruppo UHF, e guardare (o peggio commentare) un canale
 straniero poteva costare anni di carcere.
 
-Per guardare la Rai ci si procurava una kanoçe (lett. lattina): un convertitore
+Per vedere la Rai ci si procurava una kanoçe (lett. lattina): un convertitore
 artigianale da UHF a VHF, in una scatoletta di lamiera grande come un pacchetto
 di sigarette. Costava circa metà dello stipendio mensile di un operaio.
 
