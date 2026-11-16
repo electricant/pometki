@@ -16,3 +16,5 @@ La [sequoia gigante di Longarone](https://it.wikipedia.org/wiki/Sequoia_gigante_
 Al primo posto perchè puoi essere vecchio, enorme e leggendario, ma vuoi 
 mettere sopravvivere a una massa d'acqua con un'energia stimata di 60-90 TJ?
 Più o meno quanto la bomba di Hiroshima (circa 63 TJ).
+
+Se volete nerdare ulterirormente riguardo agli alberi consiglio di dare un'occhiata alla [Guida degli alberi monumentali d'Italia](https://web.archive.org/web/20250908144356/https://www.masaf.gov.it/flex/cm/pages/ServeAttachment.php/L/IT/D/2%2F3%2F2%2FD.3d644b25b10481c73308/P/BLOB%3AID%3D13577/E/pdf?mode=download).
